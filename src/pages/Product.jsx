@@ -1,12 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { ShopContext } from '../context/ShopContext';
+import { useNavigate, useParams } from 'react-router-dom';
+import ShopContext from '../context/ShopContextValue';
 import { assets } from '../assets/frontend_assets/assets';
 import RelatedProducts from '../components/RelatedProducts';
 
 function Product() {
   const { productId } = useParams();
-  const { products, currency, addToCart, addToWishlist, wishlist } = useContext(ShopContext);
+  const navigate = useNavigate();
+  const { products, currency, addToCart, addToWishlist, wishlist, buyNow } = useContext(ShopContext);
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
@@ -19,6 +20,11 @@ function Product() {
   }, [productId, products]);
 
   const isWishlisted = productData && wishlist.includes(productData._id);
+
+  const handleBuyNow = () => {
+    const success = buyNow(productData._id, size);
+    if (success) navigate('/orders');
+  };
 
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100">
@@ -80,10 +86,16 @@ function Product() {
             </div>
           </div>
 
-          <button onClick={() => addToCart(productData._id, size)}
-            className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 hover:bg-gray-900 transition'>
-            ADD TO CART
-          </button>
+          <div className='flex flex-col sm:flex-row gap-3 mt-4'>
+            <button onClick={() => addToCart(productData._id, size)}
+              className='bg-white text-black border border-black px-8 py-3 text-sm font-medium tracking-wide hover:bg-black hover:text-white transition'>
+              ADD TO CART
+            </button>
+            <button onClick={handleBuyNow}
+              className='bg-black text-white px-8 py-3 text-sm font-medium tracking-wide hover:bg-gray-900 transition'>
+              BUY NOW
+            </button>
+          </div>
 
           <hr className='mt-8 sm:w-4/5' />
           <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
@@ -93,30 +105,6 @@ function Product() {
           </div>
         </div>
       </div>
-      <button
-  onClick={() => addToWishlist(productData._id)}
-  className={`mt-2 flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all duration-200
-    ${isWishlisted
-      ? 'bg-red-50 border-red-400 text-red-500'
-      : 'border-gray-300 text-gray-600 hover:border-black hover:text-black'}`}
->
-  {/* ✅ SVG heart — fills red when wishlisted, empty black border when not */}
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill={isWishlisted ? '#ef4444' : 'none'}
-    stroke={isWishlisted ? '#ef4444' : 'black'}
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-  </svg>
-  {isWishlisted ? 'Wishlisted' : 'Wishlist'}
-</button>
-
       {/* Description */}
       <div className='mt-20'>
         <div className='flex'>

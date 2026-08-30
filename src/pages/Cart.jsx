@@ -1,13 +1,20 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { ShopContext } from '../context/ShopContext';
+import ShopContext from '../context/ShopContextValue';
 import Title from '../components/Title';
 import { assets } from '../assets/frontend_assets/assets';
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
-  const { products, cartItems, currency, delivery_fee, updateQuantity, getCartAmount } = useContext(ShopContext);
+  const { products, cartItems, currency, delivery_fee, updateQuantity, getCartAmount, getCartCount, buyAllItems } = useContext(ShopContext);
   const [cartData, setCartData] = useState([]);
   const navigate = useNavigate();
+  const cartCount = getCartCount();
+  const subtotal = getCartAmount();
+
+  const handleBuyAllItems = () => {
+    const orderPlaced = buyAllItems();
+    if (orderPlaced) navigate('/orders');
+  };
 
   useEffect(() => {
     const tempData = [];
@@ -49,11 +56,12 @@ function Cart() {
                 onChange={(e) => {
                   const val = Number(e.target.value);
                   if (val > 0) updateQuantity(item._id, item.size, val);
+                  if (val <= 0) updateQuantity(item._id, item.size, 0);
                 }}
                 className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1'
                 type="number"
                 min={1}
-                defaultValue={item.quantity}
+                value={item.quantity}
               />
 
               <img
@@ -76,7 +84,7 @@ function Cart() {
           <div className='flex flex-col gap-2 mt-2 text-sm'>
             <div className='flex justify-between'>
               <p>Subtotal</p>
-              <p>{currency}{getCartAmount()}.00</p>
+              <p>{currency}{subtotal}.00</p>
             </div>
             <hr />
             <div className='flex justify-between'>
@@ -86,13 +94,21 @@ function Cart() {
             <hr />
             <div className='flex justify-between font-bold text-base'>
               <b>Total</b>
-              <b>{currency}{getCartAmount() === 0 ? 0 : getCartAmount() + delivery_fee}.00</b>
+              <b>{currency}{subtotal === 0 ? 0 : subtotal + delivery_fee}.00</b>
             </div>
           </div>
-          <div className='w-full text-end'>
+          <div className='w-full text-end flex flex-col sm:flex-row justify-end gap-3 my-8'>
+            <button
+              onClick={handleBuyAllItems}
+              disabled={cartCount === 0}
+              className='bg-black text-white text-sm font-medium tracking-[0.12em] px-8 py-3 rounded-full shadow-sm hover:bg-gray-900 transition disabled:bg-gray-300 disabled:cursor-not-allowed'
+            >
+              BUY ALL ITEMS
+            </button>
             <button
               onClick={() => navigate('/place-order')}
-              className='bg-black text-white text-sm my-8 px-8 py-3'
+              disabled={cartCount === 0}
+              className='border border-black text-black text-sm font-medium tracking-[0.12em] px-8 py-3 rounded-full hover:bg-black hover:text-white transition disabled:border-gray-300 disabled:text-gray-400 disabled:cursor-not-allowed'
             >
               PROCEED TO CHECKOUT
             </button>

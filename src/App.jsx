@@ -1,4 +1,3 @@
-import ShopContextProvider from './context/ShopContext';
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from "./components/Navbar";
@@ -20,8 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <ShopContextProvider>
-      <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
+    <div className="px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]">
         <ToastContainer />
         <Navbar />
         <SearchBar />
@@ -40,8 +38,7 @@ function App() {
           {/* ✅ Contact route removed */}
         </Routes>
         <Footer />
-      </div>
-    </ShopContextProvider>
+    </div>
   );
 }
 

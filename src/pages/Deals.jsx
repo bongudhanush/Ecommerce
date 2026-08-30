@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { ShopContext } from '../context/ShopContext';
+import ShopContext from '../context/ShopContextValue';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import NewsLetterBox from '../components/NewsLetterBox';
@@ -12,7 +12,7 @@ function Deals() {
   const [activeTag, setActiveTag] = useState('All Deals');
   const navigate = useNavigate();
 
-  const tags = ['All Deals', 'Topwear', 'Bottomwear', 'Winterwear', 'New Arrivals'];
+  const tags = ['All Deals', 'Topwear', 'Bottomwear', 'Winterwear', 'Dress', 'Casual', 'Ethnic', 'New Arrivals'];
 
   useEffect(() => {
     if (products.length > 0) {

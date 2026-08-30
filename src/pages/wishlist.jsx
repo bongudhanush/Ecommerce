@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
-import { ShopContext } from '../context/ShopContext';
+import ShopContext from '../context/ShopContextValue';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import { useNavigate } from 'react-router-dom';
 
 function Wishlist() {
-  const { wishlist, products, removeFromWishlist, currency } = useContext(ShopContext);
+  const { wishlist, products, removeFromWishlist } = useContext(ShopContext);
   const navigate = useNavigate();
 
   const wishlistProducts = products.filter(p => wishlist.includes(p._id));

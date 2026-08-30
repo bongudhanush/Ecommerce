@@ -1,8 +1,7 @@
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 import { products } from '../assets/frontend_assets/assets';
 import { toast } from 'react-toastify';
-
-export const ShopContext = createContext();
+import ShopContext from './ShopContextValue';
 
 const ShopContextProvider = (props) => {
   const currency = '$';
@@ -59,25 +58,46 @@ const ShopContextProvider = (props) => {
     return total;
   };
 
-  const placeOrder = () => {
+  const placeOrder = (itemsToOrder = cartItems) => {
     const orderItems = [];
-    for (const productId in cartItems) {
+    for (const productId in itemsToOrder) {
       const product = products.find(p => p._id === productId);
       if (!product) continue;
-      for (const size in cartItems[productId]) {
-        if (cartItems[productId][size] > 0) {
+      for (const size in itemsToOrder[productId]) {
+        if (itemsToOrder[productId][size] > 0) {
           orderItems.push({
             ...product, size,
-            quantity: cartItems[productId][size],
+            quantity: itemsToOrder[productId][size],
             date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
             status: 'Ready to ship',
           });
         }
       }
     }
+
+    if (!orderItems.length) {
+      toast.error('Your cart is empty');
+      return false;
+    }
+
     setOrders(prev => [...prev, ...orderItems]);
-    setCartItems({});
+    if (itemsToOrder === cartItems) {
+      setCartItems({});
+    }
     toast.success('Order placed successfully!');
+    return true;
+  };
+
+  const buyAllItems = () => placeOrder();
+
+  const buyNow = (itemId, size) => {
+    if (!size) {
+      toast.error('Please select a product size');
+      return false;
+    }
+
+    const singleItemCart = { [itemId]: { [size]: 1 } };
+    return placeOrder(singleItemCart);
   };
 
   // ✅ NEW wishlist functions
@@ -101,8 +121,8 @@ const ShopContextProvider = (props) => {
     products, currency, delivery_fee,
     search, setSearch, showSearch, setShowSearch,
     cartItems, addToCart, updateQuantity, getCartCount, getCartAmount,
-    orders, placeOrder,
-    wishlist, addToWishlist, removeFromWishlist, getWishlistCount, // ✅ NEW
+    orders, placeOrder, buyAllItems, buyNow,
+    wishlist, addToWishlist, removeFromWishlist, getWishlistCount,
   };
 
   return <ShopContext.Provider value={value}>{props.children}</ShopContext.Provider>;

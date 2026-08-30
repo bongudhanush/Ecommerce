@@ -718,6 +718,54 @@ export const products = [
         sizes: ["S", "M", "L", "XL"],
         date: 1716668445448,
         bestseller: false
+    },
+    {
+        _id: "aaaca",
+        name: "Women Floral Midi Dress",
+        description: "A stylish midi dress with a flattering fit, breathable fabric, and a modern floral print for everyday elegance.",
+        price: 420,
+        image: [p_img20],
+        category: "Women",
+        subCategory: "Dress",
+        sizes: ["S", "M", "L", "XL"],
+        date: 1716670005448,
+        bestseller: true
+    },
+    {
+        _id: "aaacb",
+        name: "Elegant Satin Party Dress",
+        description: "A smooth satin dress designed for special occasions with a graceful silhouette and trending premium finish.",
+        price: 480,
+        image: [p_img22],
+        category: "Women",
+        subCategory: "Dress",
+        sizes: ["S", "M", "L", "XL"],
+        date: 1716671005448,
+        bestseller: true
+    },
+    {
+        _id: "aaacc",
+        name: "Pastel A-Line Dress",
+        description: "A soft pastel A-line dress with a feminine shape, light drape, and modern everyday style for trending looks.",
+        price: 390,
+        image: [p_img35],
+        category: "Women",
+        subCategory: "Dress",
+        sizes: ["S", "M", "L", "XL"],
+        date: 1716672005448,
+        bestseller: true
+    },
+    {
+        _id: "aaacd",
+        name: "Trendy Casual Bodycon Dress",
+        description: "A fitted casual dress combining comfort and fashion-forward styling for effortless day-to-night wear.",
+        price: 440,
+        image: [p_img48],
+        category: "Women",
+        subCategory: "Dress",
+        sizes: ["S", "M", "L", "XL"],
+        date: 1716673005448,
+        bestseller: true
     }
 
 ]

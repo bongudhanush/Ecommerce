@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { assets } from '../assets/frontend_assets/assets';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { ShopContext } from '../context/ShopContext';
+import ShopContext from '../context/ShopContextValue';
 
 function Navbar() {
   const [visible, setVisible] = useState(false);

@@ -1,16 +1,22 @@
 import React, { useContext, useState } from 'react';
 import Title from '../components/Title';
-import { ShopContext } from '../context/ShopContext';
+import ShopContext from '../context/ShopContextValue';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function PlaceOrder() {
-  const { currency, delivery_fee, getCartAmount, placeOrder } = useContext(ShopContext);
+  const { currency, delivery_fee, getCartAmount, getCartCount, placeOrder } = useContext(ShopContext);
   const navigate = useNavigate();
   const [payment, setPayment] = useState('stripe');
 
   const handlePlaceOrder = () => {
-    placeOrder();           // ✅ saves cart items to orders
-    navigate('/orders');    // ✅ redirects to orders page
+    if (getCartCount() === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
+
+    const orderPlaced = placeOrder();
+    if (orderPlaced) navigate('/orders');
   };
 
   return (
