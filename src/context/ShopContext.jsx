@@ -100,6 +100,11 @@ const ShopContextProvider = (props) => {
     return placeOrder(singleItemCart);
   };
 
+  const cancelOrder = (orderIndex) => {
+    setOrders(prev => prev.filter((_, index) => index !== orderIndex));
+    toast.success('Order cancelled successfully');
+  };
+
   // ✅ NEW wishlist functions
   const addToWishlist = (itemId) => {
     if (wishlist.includes(itemId)) {
@@ -121,7 +126,7 @@ const ShopContextProvider = (props) => {
     products, currency, delivery_fee,
     search, setSearch, showSearch, setShowSearch,
     cartItems, addToCart, updateQuantity, getCartCount, getCartAmount,
-    orders, placeOrder, buyAllItems, buyNow,
+    orders, placeOrder, buyAllItems, buyNow, cancelOrder,
     wishlist, addToWishlist, removeFromWishlist, getWishlistCount,
   };
 

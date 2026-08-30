@@ -4,9 +4,14 @@ import Title from '../components/Title';
 import { useNavigate } from 'react-router-dom';
 
 function Orders() {
-  const { orders, currency } = useContext(ShopContext);
+  const { orders, currency, cancelOrder } = useContext(ShopContext);
   const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const handleCancelOrder = (orderIndex) => {
+    cancelOrder(orderIndex);
+    setSelectedOrder(null);
+  };
 
   return (
     <div className='border-t pt-16'>
@@ -54,18 +59,26 @@ function Orders() {
                 </div>
               </div>
 
-              {/* Status + Track */}
+              {/* Status + Order actions */}
               <div className='md:w-1/2 flex justify-between items-center gap-4'>
                 <div className='flex items-center gap-2'>
                   <p className='min-w-2 h-2 rounded-full bg-green-500'></p>
                   <p className='text-sm md:text-base'>{item.status}</p>
                 </div>
-                <button
-                  onClick={() => setSelectedOrder(index)}
-                  className='border border-black px-4 py-2 text-sm font-medium rounded-full hover:bg-black hover:text-white transition'
-                >
-                  Track Order
-                </button>
+                <div className='flex items-center gap-2'>
+                  <button
+                    onClick={() => setSelectedOrder(index)}
+                    className='border border-black px-4 py-2 text-sm font-medium rounded-full hover:bg-black hover:text-white transition'
+                  >
+                    Track Order
+                  </button>
+                  <button
+                    onClick={() => handleCancelOrder(index)}
+                    className='border border-red-500 text-red-600 px-4 py-2 text-sm font-medium rounded-full hover:bg-red-500 hover:text-white transition'
+                  >
+                    Cancel Order
+                  </button>
+                </div>
               </div>
             </div>
           ))}
