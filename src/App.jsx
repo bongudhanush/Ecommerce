@@ -11,7 +11,7 @@ import Product from "./pages/Product";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
 import Deals from "./pages/Deals";         // ✅ NEW
-import Wishlist from "./pages/Wishlist";   // ✅ NEW
+import Wishlist from './pages/wishlist';  // ✅ NEW
 import Footer from "./components/Footer";
 import SearchBar from './components/SearchBar';
 import { ToastContainer } from "react-toastify";
