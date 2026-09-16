@@ -23,7 +23,7 @@ function Product() {
 
   const handleBuyNow = () => {
     const success = buyNow(productData._id, size);
-    if (success) navigate('/orders');
+    if (success) navigate('/place-order');
   };
 
   return productData ? (

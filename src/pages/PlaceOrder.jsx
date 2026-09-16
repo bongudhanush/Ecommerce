@@ -5,22 +5,31 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function PlaceOrder() {
-  const { currency, delivery_fee, getCartAmount, getCartCount, placeOrder } = useContext(ShopContext);
+  const { currency, delivery_fee, cartItems, getCartAmount, getCartCount, placeOrder } = useContext(ShopContext);
   const navigate = useNavigate();
   const [payment, setPayment] = useState('stripe');
+  const [deliveryInfo, setDeliveryInfo] = useState({
+    firstName: '', lastName: '', email: '', street: '', city: '', state: '', zipCode: '', country: '', phone: '',
+  });
 
-  const handlePlaceOrder = () => {
+  const updateDeliveryInfo = (event) => {
+    const { name, value } = event.target;
+    setDeliveryInfo((previous) => ({ ...previous, [name]: value }));
+  };
+
+  const handlePlaceOrder = (event) => {
+    event.preventDefault();
     if (getCartCount() === 0) {
       toast.error('Your cart is empty');
       return;
     }
 
-    const orderPlaced = placeOrder();
+    const orderPlaced = placeOrder(cartItems, deliveryInfo);
     if (orderPlaced) navigate('/orders');
   };
 
   return (
-    <div className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
+    <form onSubmit={handlePlaceOrder} className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
 
       {/* Left - Delivery Info */}
       <div className='flex flex-col gap-4 w-full sm:max-w-[480px]'>
@@ -28,20 +37,20 @@ function PlaceOrder() {
           <Title text1={'DELIVERY'} text2={'INFORMATION'} />
         </div>
         <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='First name' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Last name' />
+          <input name='firstName' value={deliveryInfo.firstName} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='First name' />
+          <input name='lastName' value={deliveryInfo.lastName} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Last name' />
         </div>
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="email" placeholder='Email address' />
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Street' />
+        <input name='email' value={deliveryInfo.email} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="email" placeholder='Email address' />
+        <input name='street' value={deliveryInfo.street} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Street address' />
         <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='City' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='State' />
+          <input name='city' value={deliveryInfo.city} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='City' />
+          <input name='state' value={deliveryInfo.state} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='State' />
         </div>
         <div className='flex gap-3'>
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Zipcode' />
-          <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Country' />
+          <input name='zipCode' value={deliveryInfo.zipCode} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Zipcode' />
+          <input name='country' value={deliveryInfo.country} onChange={updateDeliveryInfo} required className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Country' />
         </div>
-        <input className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Phone' />
+        <input name='phone' value={deliveryInfo.phone} onChange={updateDeliveryInfo} required pattern='[0-9+() -]{7,}' className='border border-gray-300 rounded py-1.5 px-3.5 w-full' type="tel" placeholder='Phone number' />
       </div>
 
       {/* Right - Summary + Payment */}
@@ -99,15 +108,15 @@ function PlaceOrder() {
 
           <div className='w-full text-end mt-8'>
             <button
-              onClick={handlePlaceOrder}
               className='bg-black text-white px-16 py-3 text-sm'
+              type='submit'
             >
               PLACE ORDER
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 

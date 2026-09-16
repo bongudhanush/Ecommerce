@@ -58,7 +58,7 @@ const ShopContextProvider = (props) => {
     return total;
   };
 
-  const placeOrder = (itemsToOrder = cartItems) => {
+  const placeOrder = (itemsToOrder = cartItems, deliveryInfo = {}) => {
     const orderItems = [];
     for (const productId in itemsToOrder) {
       const product = products.find(p => p._id === productId);
@@ -68,6 +68,7 @@ const ShopContextProvider = (props) => {
           orderItems.push({
             ...product, size,
             quantity: itemsToOrder[productId][size],
+            deliveryInfo,
             date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
             status: 'Ready to ship',
           });
@@ -96,8 +97,8 @@ const ShopContextProvider = (props) => {
       return false;
     }
 
-    const singleItemCart = { [itemId]: { [size]: 1 } };
-    return placeOrder(singleItemCart);
+    setCartItems({ [itemId]: { [size]: 1 } });
+    return true;
   };
 
   const cancelOrder = (orderIndex) => {
