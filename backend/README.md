@@ -1,14 +1,20 @@
-# JDBC backend
+# JDBC order API
 
-`src/DBConnection.java` provides a reusable JDBC connection for the ecommerce
-backend. It does not hard-code database credentials.
+The React checkout submits orders to a small Java HTTP API. The API uses
+`src/DBConnection.java` and MySQL Connector/J to store order and item records.
+The API binds to localhost by default and does not hard-code credentials.
 
-## Setup
+## Database setup
 
-1. Download the JDBC driver for your database. For MySQL, use the MySQL
-   Connector/J JAR.
-2. Put the JAR in `backend/lib/`.
-3. Set these environment variables in the terminal that runs the backend:
+Run `backend/schema.sql` against MySQL to create the `ecommerce` database and
+order tables. For example, from the repository root:
+
+```powershell
+Get-Content backend\schema.sql | mysql -u root -p
+```
+
+Set these variables in the PowerShell terminal that runs the API. Keep your
+actual password private and do not commit it:
 
 ```powershell
 $env:JDBC_URL = "jdbc:mysql://localhost:3306/ecommerce"
@@ -16,13 +22,25 @@ $env:DB_USER = "root"
 $env:DB_PASSWORD = "your-password"
 ```
 
-4. Compile and run the connection check from the repository root. Replace the
-   JAR name with the driver file in `backend/lib/`:
+## Run the API
+
+From the repository root, compile and start the Java API:
 
 ```powershell
-javac -d backend/out backend/src/DBConnection.java
-java -cp "backend/out;backend/lib/mysql-connector-j-*.jar" DBConnection
+javac -cp "backend/lib/*" -d backend/out backend/src/DBConnection.java backend/src/OrderApiServer.java
+java -cp "backend/out;backend/lib/*" OrderApiServer
 ```
 
-The JDBC driver is discovered automatically by JDBC 4. If the check succeeds,
-`DBConnection.getConnection()` can be used by repository or service classes.
+Leave that terminal open. In another terminal, run the frontend with `npm run
+dev` and submit checkout. Vite's default `http://localhost:5173` and
+`http://127.0.0.1:5173` origins are allowed. Set `API_ALLOWED_ORIGINS` to a
+comma-separated list to allow other frontend origins, or set `API_HOST` and
+`API_PORT` to change the API bind address and port. To use a different API URL
+in the frontend, set `VITE_API_BASE_URL` before starting Vite.
+
+The API stores pending orders and item snapshots; it does not process payments
+or authenticate customers. Prices come from the frontend's demo catalog, so
+this is not suitable for production payments without server-side pricing and
+customer authentication. The existing orders page still keeps its display
+state in memory; historical order retrieval is not exposed without customer
+authentication.

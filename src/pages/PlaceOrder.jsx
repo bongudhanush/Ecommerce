@@ -17,15 +17,19 @@ function PlaceOrder() {
     setDeliveryInfo((previous) => ({ ...previous, [name]: value }));
   };
 
-  const handlePlaceOrder = (event) => {
+  const handlePlaceOrder = async (event) => {
     event.preventDefault();
     if (getCartCount() === 0) {
       toast.error('Your cart is empty');
       return;
     }
 
-    const orderPlaced = placeOrder(cartItems, deliveryInfo);
-    if (orderPlaced) navigate('/orders');
+    try {
+      const orderPlaced = await placeOrder(cartItems, deliveryInfo);
+      if (orderPlaced) navigate('/orders');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not save your order');
+    }
   };
 
   return (

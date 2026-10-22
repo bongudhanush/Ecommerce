@@ -58,7 +58,7 @@ const ShopContextProvider = (props) => {
     return total;
   };
 
-  const placeOrder = (itemsToOrder = cartItems, deliveryInfo = {}) => {
+  const placeOrder = async (itemsToOrder = cartItems, deliveryInfo = {}) => {
     const orderItems = [];
     for (const productId in itemsToOrder) {
       const product = products.find(p => p._id === productId);
@@ -81,11 +81,35 @@ const ShopContextProvider = (props) => {
       return false;
     }
 
+    const form = new URLSearchParams();
+    for (const [name, value] of Object.entries(deliveryInfo)) {
+      form.append(name, value);
+    }
+    form.append('deliveryFee', String(delivery_fee));
+    for (const item of orderItems) {
+      form.append('productId', item._id);
+      form.append('productName', item.name);
+      form.append('size', item.size);
+      form.append('quantity', String(item.quantity));
+      form.append('unitPrice', String(item.price));
+    }
+
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
+    const response = await fetch(`${apiBaseUrl}/api/orders`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+      body: form,
+    });
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || 'Could not save your order');
+    }
+
     setOrders(prev => [...prev, ...orderItems]);
     if (itemsToOrder === cartItems) {
       setCartItems({});
     }
-    toast.success('Order placed successfully!');
+    toast.success(`Order #${result.orderId} saved successfully!`);
     return true;
   };
 
